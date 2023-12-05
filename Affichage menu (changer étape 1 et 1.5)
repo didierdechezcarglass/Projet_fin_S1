@@ -1,0 +1,107 @@
+from fltk import *
+
+longueur,largeur = 10,7 
+x,y = longueur*100,largeur*100
+etape = 0
+etape_pre = etape
+if x < 400:
+    x = 400
+if y < 400 :
+    y = 400
+
+
+'''
+Afficahge du menu qui permet de voir les règles, les commandes mùais aussi de lancer le jeu.
+Il faut modifier les étapes 1 et 1,5
+'''
+
+
+cree_fenetre(x,y)
+image(x/2, y/2, 'tilesetOpenGameBackground.png',
+        largeur=int(x+x*0.7), hauteur=int(y+(y/16)*5), ancrage='center', tag='im')
+
+x1, y1, x2, y2 = None, None, None, None
+
+continuer = True
+
+while continuer:
+    ev = donne_ev()
+    tev = type_ev(ev)
+
+    if etape == 0:
+        efface("jouer")
+        efface("commandes")
+        efface("règle")
+        rectangle(x / 3, y * 8 / 10, x * 2 / 3, y * 9 / 10, tag="menu", remplissage="white")
+        rectangle(x / 20, y * 0.4, x * 9 / 20, y / 2, tag="menu", remplissage="white")
+        rectangle(x * 11 / 20, y * 0.4, x * 19 / 20, y / 2, tag="menu", remplissage="white")
+        texte(x / 2, y * 8.5 / 10, "jouer", couleur='black', ancrage='center', tag="menu")
+        texte(x / 4, y * 4.5 / 10, "règles", couleur='black', ancrage='center', tag="menu")
+        texte(x * 3 / 4, y * 4.5 / 10, "commandes", couleur='black', ancrage='center', tag="menu")
+    elif etape == 1:
+        '''afficher le plateau de jeu et lancer la partie + switch sur l'étape 1.5'''
+
+    elif etape == 1.5:
+        '''if x1 is not None and y1 is not None and x2 is not None and y2 is not None:
+            tableau = suppression(x1, y1, x2, y2, tableau, mon_dico)
+            x1,y1,x2,y2 = None, None, None, None
+            etape = 1'''
+            
+    elif etape == 2:
+        texte(120, 100, "Règles du jeu :", ancrage="center", couleur = "white", tag="règle")
+        texte(400, 200, "- Le but du jeu Pièges ! est d'éliminer toutes les billes des adversaires.", ancrage="center", couleur = "black", taille=18,
+              tag="règle")
+        texte(455, 275, "- Pour cela, il y a des trous sur le plateau de jeu qui peuvent être déplacés grâce\n"
+              "à des tirettes.", ancrage="center", couleur = "black", taille=18,
+              tag="règle")
+        texte(300, 350, "- Voir les commandes dans la catégorie 'commande'", ancrage="center", couleur = "black", taille=18, tag="règle")
+        texte(400, 500, "'Backspace' pour retourner au menu principal", ancrage="center", couleur="red", taille=18,
+              tag="règle")
+        texte(340, 550, "'Echap' pour quitter le programme", ancrage="center", couleur="red", taille=18, tag="règle")
+        
+    elif etape == 3:
+        texte(100, 100, "Commandes :", ancrage="center", couleur = "white", tag="commandes")
+        texte(435, 200, "- Pour déposer les billes sur le plateau de jeu, il suffit de faire un 'right clic'.", ancrage="center",couleur = "black", taille=18, tag="commandes")
+        texte(455, 300, "- Pour sélectionner une tirette, il suffit de faire un 'right clic' sur la tirette choisie.", ancrage="center", couleur="black", taille=18,
+              tag="règle")
+        texte(463, 400, "- Pour déplacer une tirette, il suffit d'utiliser les flèches 'right', 'left', 'up' et 'down' \n"
+        "pour bouger la tirette dans la direction souhaitée.", ancrage="center", couleur="black", taille=18,
+              tag="règle")
+        texte(400, 500, "'Backspace' pour retourner au menu principal", ancrage="center", couleur="red", taille=18,
+              tag="règle")
+
+        texte(340, 550, "'Echap' pour quitter le programme", ancrage="center", couleur="red", taille=18, tag="règle")
+
+    # Actions en fonction du type d'événement reçu :
+    if tev == 'Touche':
+        print('Appui sur la touche', touche(ev))
+        if touche(ev) == "Escape":
+            continuer = False
+        if touche(ev) == "BackSpace" and etape != 1.5:
+            etape = etape_pre
+    elif tev == "ClicDroit":
+        if etape == 1.5:
+            print("Clic droit au point", (abscisse(ev), ordonnee(ev)))
+            x2, y2 = abscisse_souris(), ordonnee_souris()
+            efface("select2")
+            cercle(x2, y2, 10, remplissage="red", tag="select2")
+    elif tev == "ClicGauche":
+        x1, y1 = abscisse_souris(), ordonnee_souris()
+        if etape == 0:
+            if (x / 3) <= x1 <= (x * 2 / 3) and (y * 8 / 10) <= y1 <= (y * 9 / 10):
+                etape = 1
+                efface("menu")
+            if (x / 20) <= x1 <= (x * 9 / 20) and (y * 0.4) <= y1 <= (y / 2):
+                etape = 2
+                efface("menu")
+            if (x * 11 / 20) <= x1 <= (x * 19 / 20) and (y * 0.4) <= y1 <= (y / 2):
+                etape = 3
+                efface("menu")
+       
+    elif tev == 'Quitte':  # On quitte la boucle si la fenêtre est fermée
+        continuer = False
+
+    mise_a_jour()
+
+ferme_fenetre()
+
